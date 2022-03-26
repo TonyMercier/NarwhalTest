@@ -8,7 +8,7 @@ namespace NarwhalTest.Persistence.Mappings
     {
         public VesselMappingProfile()
         {
-            CreateMap<TrackingPointDto,TrackingPoint>();
+            CreateMap<TrackingPointDto, TrackingPoint>();
             CreateMap<List<TrackingPointDto>, List<Vessel>>()
                 .ConvertUsing<TrackingPointDtoToVesselTypeConverter>();
         }
