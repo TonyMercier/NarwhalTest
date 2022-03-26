@@ -10,5 +10,7 @@
 
         public int Id { get; set; }
         public List<TrackingPoint> Trackings { get; set; }
+        public double? DistanceTraveledInKM { get; set; }
+        public double? AverageSpeedInKmH { get; set; }
     }
 }

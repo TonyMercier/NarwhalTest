@@ -21,7 +21,7 @@ namespace NarwhalTest.Persistence.Repositories
             var result = await _trackingController.GetTrackingsByDateRange(from,to,maxNumber);
             if (!result.IsSuccessStatusCode)
                 throw result.Error!;
-            return result!.Content!;
+            return _mapper.Map<List<Vessel>>(result.Content);
         }
     }
 }

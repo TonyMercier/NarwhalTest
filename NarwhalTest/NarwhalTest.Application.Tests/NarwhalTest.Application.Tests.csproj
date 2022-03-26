@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NarwhalTest.Persistence\NarwhalTest.Persistence.csproj" />
+    <ProjectReference Include="..\NarwhalTest.Application\NarwhalTest.Application.csproj" />
   </ItemGroup>
 
 </Project>
