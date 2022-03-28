@@ -1,6 +1,6 @@
-﻿namespace NarwhalTest.Domain.Entities.Intersections
+﻿namespace NarwhalTest.Domain.Entities
 {
-    public class IntersectionPoint
+    public class Coordinate
     {
         public double Latitude { get; set; }
         public double Longitude { get; set; }

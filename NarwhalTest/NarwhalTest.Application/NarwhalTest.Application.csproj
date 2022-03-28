@@ -16,6 +16,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NarwhalTest.Domain\NarwhalTest.Domain.csproj" />
+    <ProjectReference Include="..\NarwhalTest.Extensions.IEnumerable\NarwhalTest.Extensions.IEnumerable.csproj" />
+    <ProjectReference Include="..\NarwhalTest.Extensions.Number\NarwhalTest.Extensions.Number.csproj" />
   </ItemGroup>
 
 </Project>

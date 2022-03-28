@@ -12,6 +12,376 @@ namespace NarwhalTest.Application.Tests.Features.VesselTracking.BusinessLogic.In
         {
             yield return new object[]
             {
+                 new List<Vessel>()
+                 {
+                     new Vessel(123,
+                     new List<TrackingPoint>()
+                     {
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 10:00:00"),
+                             Latitude = 0,
+                             Longitude = 0
+                         },
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 10:30:00"),
+                             Latitude = 1.25,
+                             Longitude = 1.25
+                         },
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 11:00:00"),
+                             Latitude = 1.5,
+                             Longitude = 1.5
+                         }
+                     }
+                     )
+                     {
+                         DistanceTraveledInKM = 235.9,
+                         AverageSpeedInKmH = 235.9
+                     },
+                     new Vessel(222,
+                     new List<TrackingPoint>()
+                     {
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 10:00:00"),
+                             Latitude = 1.1,
+                             Longitude = 0.9
+                         },
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 11:00:00"),
+                             Latitude = 0.9,
+                             Longitude = 1.1
+                         }
+                     }
+                     )
+                     {
+                         DistanceTraveledInKM = 31.45,
+                         AverageSpeedInKmH = 31.45
+                     }
+                 },
+                 new List<Intersection>()
+                 {
+                     new Intersection()
+                     {
+                         IntersectionPoint = new Coordinate()
+                         {
+                             Latitude = 1,
+                             Longitude = 1
+                         },
+                         Vessel1 = new IntersectionVessel(123, DateTime.Parse("2022-03-25 10:39:59")),
+                         Vessel2 = new IntersectionVessel(222,DateTime.Parse("2022-03-25 10:29:59"))
+                     }
+                 }
+            };
+            yield return new object[]
+            {
+                 new List<Vessel>()
+                 {
+                     new Vessel(123,
+                     new List<TrackingPoint>()
+                     {
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 10:00:00"),
+                             Latitude = 1,
+                             Longitude = 1
+                         },
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 10:30:00"),
+                             Latitude = 1.25,
+                             Longitude = 1.25
+                         },
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 11:00:00"),
+                             Latitude = 1.5,
+                             Longitude = 1.5
+                         }
+                     }
+                     )
+                     {
+                         DistanceTraveledInKM = 78.62,
+                         AverageSpeedInKmH = 78.62
+                     },
+                     new Vessel(222,
+                     new List<TrackingPoint>()
+                     {
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 10:00:00"),
+                             Latitude = 1.1,
+                             Longitude = 0.9
+                         },
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 11:00:00"),
+                             Latitude = 0.9,
+                             Longitude = 1.1
+                         }
+                     }
+                     )
+                     {
+                         DistanceTraveledInKM = 31.45,
+                         AverageSpeedInKmH = 31.45
+                     }
+                 },
+                 new List<Intersection>()
+                 {
+                     new Intersection()
+                     {
+                         IntersectionPoint = new Coordinate()
+                         {
+                             Latitude = 1,
+                             Longitude = 1
+                         },
+                         Vessel1 = new IntersectionVessel(123, DateTime.Parse("2022-03-25 10:00:00")),
+                         Vessel2 = new IntersectionVessel(222,DateTime.Parse("2022-03-25 10:29:59"))
+                     }
+                 }
+            };
+            yield return new object[]
+            {
+                 new List<Vessel>()
+                 {
+                     new Vessel(123,
+                     new List<TrackingPoint>()
+                     {
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 10:00:00"),
+                             Latitude = 0,
+                             Longitude = 0
+                         },
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 10:39:59"),
+                             Latitude = 1,
+                             Longitude = 1
+                         },
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 10:30:00"),
+                             Latitude = 1.25,
+                             Longitude = 1.25
+                         },
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 11:00:00"),
+                             Latitude = 1.5,
+                             Longitude = 1.5
+                         }
+                     }
+                     )
+                     {
+                         DistanceTraveledInKM = 235.9,
+                         AverageSpeedInKmH = 235.9
+                     },
+                     new Vessel(222,
+                     new List<TrackingPoint>()
+                     {
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 10:00:00"),
+                             Latitude = 1.1,
+                             Longitude = 0.9
+                         },
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 11:00:00"),
+                             Latitude = 0.9,
+                             Longitude = 1.1
+                         }
+                     }
+                     )
+                     {
+                         DistanceTraveledInKM = 31.45,
+                         AverageSpeedInKmH = 31.45
+                     }
+                 },
+                 new List<Intersection>()
+                 {
+                     new Intersection()
+                     {
+                         IntersectionPoint = new Coordinate()
+                         {
+                             Latitude = 1,
+                             Longitude = 1
+                         },
+                         Vessel1 = new IntersectionVessel(123, DateTime.Parse("2022-03-25 10:39:59")),
+                         Vessel2 = new IntersectionVessel(222,DateTime.Parse("2022-03-25 10:29:59"))
+                     }
+                 }
+           };
+            yield return new object[]
+            {
+                 new List<Vessel>()
+                 {
+                     new Vessel(123,
+                     new List<TrackingPoint>()
+                     {
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 10:00:00"),
+                             Latitude = 0,
+                             Longitude = 0
+                         },
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 10:39:59"),
+                             Latitude = 1,
+                             Longitude = 1
+                         }
+                     }
+                     )
+                     {
+                         DistanceTraveledInKM = 157.2,
+                         AverageSpeedInKmH = 241.846
+                     },
+                     new Vessel(222,
+                     new List<TrackingPoint>()
+                     {
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 10:00:00"),
+                             Latitude = 1.1,
+                             Longitude = 0.9
+                         },
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 11:00:00"),
+                             Latitude = 0.9,
+                             Longitude = 1.1
+                         }
+                     }
+                     )
+                     {
+                         DistanceTraveledInKM = 31.45,
+                         AverageSpeedInKmH = 31.45
+                     }
+                 },
+                 new List<Intersection>()
+                 {
+                     new Intersection()
+                     {
+                         IntersectionPoint = new Coordinate()
+                         {
+                             Latitude = 1,
+                             Longitude = 1
+                         },
+                         Vessel1 = new IntersectionVessel(123, DateTime.Parse("2022-03-25 10:39:59")),
+                         Vessel2 = new IntersectionVessel(222,DateTime.Parse("2022-03-25 10:29:59"))
+                     }
+                 }
+           };
+            yield return new object[]
+            {
+                 new List<Vessel>()
+                 {
+                     new Vessel(123,
+                     new List<TrackingPoint>()
+                     {
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 10:00:00"),
+                             Latitude = 0,
+                             Longitude = 0
+                         },
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 10:39:59"),
+                             Latitude = 1,
+                             Longitude = 1
+                         }
+                     }
+                     )
+                     {
+                         DistanceTraveledInKM = 157.2,
+                         AverageSpeedInKmH = 241.846
+                     },
+                     new Vessel(222,
+                     new List<TrackingPoint>()
+                     {
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 10:00:00"),
+                             Latitude = 1.1,
+                             Longitude = 0.9
+                         },
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 11:00:00"),
+                             Latitude = 0.9,
+                             Longitude = 1.1
+                         }
+                     }
+                     )
+                     {
+                         DistanceTraveledInKM = 31.45,
+                         AverageSpeedInKmH = 31.45
+                     },
+                     new Vessel(333,
+                     new List<TrackingPoint>()
+                     {
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 10:39:59"),
+                             Latitude = 1,
+                             Longitude = 1
+                         },
+                         new TrackingPoint()
+                         {
+                             Date = DateTime.Parse("2022-03-25 10:00:00"),
+                             Latitude = 1,
+                             Longitude = 5
+                         }
+                     }
+                     )
+                     {
+                         DistanceTraveledInKM = 157.2,
+                         AverageSpeedInKmH = 241.846
+                     }
+                 },
+                 new List<Intersection>()
+                 {
+                     new Intersection()
+                     {
+                         IntersectionPoint = new Coordinate()
+                         {
+                             Latitude = 1,
+                             Longitude = 1
+                         },
+                         Vessel1 = new IntersectionVessel(123, DateTime.Parse("2022-03-25 10:39:59")),
+                         Vessel2 = new IntersectionVessel(222,DateTime.Parse("2022-03-25 10:29:59"))
+                     },
+                     new Intersection()
+                     {
+                         IntersectionPoint = new Coordinate()
+                         {
+                             Latitude = 1,
+                             Longitude = 1
+                         },
+                         Vessel1 = new IntersectionVessel(123, DateTime.Parse("2022-03-25 10:39:59")),
+                         Vessel2 = new IntersectionVessel(333,DateTime.Parse("2022-03-25 10:39:59"))
+                     },
+                     new Intersection()
+                     {
+                         IntersectionPoint = new Coordinate()
+                         {
+                             Latitude = 1,
+                             Longitude = 1
+                         },
+                         Vessel1 = new IntersectionVessel(222,DateTime.Parse("2022-03-25 10:29:59")),
+                         Vessel2 = new IntersectionVessel(333,DateTime.Parse("2022-03-25 10:39:59"))
+                     }
+                 }
+           };
+            yield return new object[]
+             {
                 new List<Vessel>()
                 {
                     new Vessel(123,
@@ -20,26 +390,20 @@ namespace NarwhalTest.Application.Tests.Features.VesselTracking.BusinessLogic.In
                         new TrackingPoint()
                         {
                             Date = DateTime.Parse("2022-03-25 10:00:00"),
-                            Latitude = 41.270591735839844,
-                            Longitude = -69.0907211303711
+                            Latitude = 0,
+                            Longitude = 0
                         },
                         new TrackingPoint()
                         {
-                            Date = DateTime.Parse("2022-03-25 10:20:00"),
-                            Latitude = 41.27149200439453,
-                            Longitude = -69.08917999267578
-                        },
-                        new TrackingPoint()
-                        {
-                            Date = DateTime.Parse("2022-03-25 10:45:00"),
-                            Latitude = 41.27067184448242,
-                            Longitude = -69.0911865234375
-                        },
+                            Date = DateTime.Parse("2022-03-25 10:39:59"),
+                            Latitude = 1,
+                            Longitude = 1
+                        }
                     }
                     )
                     {
-                        DistanceTraveledInKM = 1.062,
-                        AverageSpeedInKmH = 1.416
+                        DistanceTraveledInKM = 157.2,
+                        AverageSpeedInKmH = 241.846
                     },
                     new Vessel(222,
                     new List<TrackingPoint>()
@@ -47,39 +411,74 @@ namespace NarwhalTest.Application.Tests.Features.VesselTracking.BusinessLogic.In
                         new TrackingPoint()
                         {
                             Date = DateTime.Parse("2022-03-25 10:00:00"),
-                            Latitude = 41.2707909349529,
-                            Longitude = -69.0893964485534
+                            Latitude = 1.1,
+                            Longitude = 0.9
                         },
                         new TrackingPoint()
                         {
-                            Date = DateTime.Parse("2022-03-25 10:20:00"),
-                            Latitude = 41.2716097967324,
-                            Longitude = -69.0904161632222
-                        },
-                        new TrackingPoint()
-                        {
-                            Date = DateTime.Parse("2022-03-25 10:45:00"),
-                            Latitude = 41.2713780433986,
-                            Longitude = -69.0914204276688
-                        },
+                            Date = DateTime.Parse("2022-03-25 11:00:00"),
+                            Latitude = 0.9,
+                            Longitude = 1.1
+                        }
                     }
                     )
                     {
-                        DistanceTraveledInKM = 1.062,
-                        AverageSpeedInKmH = 1.416
+                        DistanceTraveledInKM = 31.45,
+                        AverageSpeedInKmH = 31.45
+                    },
+                    new Vessel(333,
+                    new List<TrackingPoint>()
+                    {
+                        new TrackingPoint()
+                        {
+                            Date = DateTime.Parse("2022-03-25 10:39:59"),
+                            Latitude = 1,
+                            Longitude = 1
+                        },
+                        new TrackingPoint()
+                        {
+                            Date = DateTime.Parse("2022-03-25 10:00:00"),
+                            Latitude = -1,
+                            Longitude = 5
+                        }
+                    }
+                    )
+                    {
+                        DistanceTraveledInKM = 157.2,
+                        AverageSpeedInKmH = 241.846
                     }
                 },
                 new List<Intersection>()
                 {
                     new Intersection()
                     {
-                        IntersectionPoint = new IntersectionPoint()
+                        IntersectionPoint = new Coordinate()
                         {
-                            Latitude =41.2711235797577,
-                            Longitude = -69.0898106856982
+                            Latitude = 1,
+                            Longitude = 1
                         },
-                        Vessel1 = new IntersectionVessel(123, DateTime.Parse("")),
-                        Vessel2 = new IntersectionVessel(222,DateTime.Parse(""))
+                        Vessel1 = new IntersectionVessel(123, DateTime.Parse("2022-03-25 10:39:59")),
+                        Vessel2 = new IntersectionVessel(222,DateTime.Parse("2022-03-25 10:29:59"))
+                    },
+                    new Intersection()
+                    {
+                        IntersectionPoint = new Coordinate()
+                        {
+                            Latitude = 1,
+                            Longitude = 1
+                        },
+                        Vessel1 = new IntersectionVessel(123, DateTime.Parse("2022-03-25 10:39:59")),
+                        Vessel2 = new IntersectionVessel(333,DateTime.Parse("2022-03-25 10:39:59"))
+                    },
+                    new Intersection()
+                    {
+                        IntersectionPoint = new Coordinate()
+                        {
+                            Latitude = 1,
+                            Longitude = 1
+                        },
+                        Vessel1 = new IntersectionVessel(222,DateTime.Parse("2022-03-25 10:29:59")),
+                        Vessel2 = new IntersectionVessel(333,DateTime.Parse("2022-03-25 10:39:59"))
                     }
                 }
             };

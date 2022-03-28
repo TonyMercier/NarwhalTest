@@ -1,9 +1,7 @@
 ﻿namespace NarwhalTest.Domain.Entities
 {
-    public class TrackingPoint
+    public class TrackingPoint  : Coordinate
     {
         public DateTime Date { get; set; }
-        public double Longitude { get; set; }
-        public double Latitude { get; set; }
     }
 }

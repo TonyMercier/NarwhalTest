@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using NarwhalTest.Application.Features.VesselTracking.BusinessLogic;
+using NarwhalTest.Application.Features.VesselTracking.BusinessLogic.IntersectionProcessor;
 using NarwhalTest.Application.Features.VesselTracking.Contracts;
 
 namespace NarwhalTest.Application.Features.VesselTracking.Queries.GetVesselTrackingInfos
@@ -9,11 +10,13 @@ namespace NarwhalTest.Application.Features.VesselTracking.Queries.GetVesselTrack
         private readonly IVesselTrackingRepository _vesselTrackingRepository;
         private readonly IVesselDistanceProcessor _vesselDistanceProcessor;
         private readonly IVesselAverageSpeedProcessor _vesselAverageSpeedProcessor;
-        public GetVesselTrackingInfosQueryHandler(IVesselTrackingRepository vesselTrackingRepository, IVesselAverageSpeedProcessor vesselAverageSpeedProcessor, IVesselDistanceProcessor vesselDistanceProcessor)
+        private readonly IVesselIntersectionProcessor _vesselIntersectionProcessor;
+        public GetVesselTrackingInfosQueryHandler(IVesselTrackingRepository vesselTrackingRepository, IVesselAverageSpeedProcessor vesselAverageSpeedProcessor, IVesselDistanceProcessor vesselDistanceProcessor, IVesselIntersectionProcessor vesselIntersectionProcessor)
         {
             _vesselTrackingRepository = vesselTrackingRepository;
             _vesselAverageSpeedProcessor = vesselAverageSpeedProcessor;
             _vesselDistanceProcessor = vesselDistanceProcessor;
+            _vesselIntersectionProcessor = vesselIntersectionProcessor;
         }
 
         public async Task<GetVesselTrackingInfosResponse> Handle(GetVesselTrackingInfosQuery request, CancellationToken cancellationToken)
@@ -23,7 +26,8 @@ namespace NarwhalTest.Application.Features.VesselTracking.Queries.GetVesselTrack
                 .Select(_vesselDistanceProcessor.GetVesselWithProcessedDistance)
                 .Select(_vesselAverageSpeedProcessor.GetVesselWithProcessedAverageSpeed)
                 .ToList();
-            return new GetVesselTrackingInfosResponse(vessels);
+            var intersections = _vesselIntersectionProcessor.GetIntersections(vessels);
+            return new GetVesselTrackingInfosResponse(vessels, intersections); 
         }
         
     }

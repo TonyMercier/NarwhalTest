@@ -1,41 +1,86 @@
 ﻿using Geolocation;
 using NarwhalTest.Domain.Entities;
 using NarwhalTest.Domain.Entities.Intersections;
+using NarwhalTest.Extensions.IEnumerable.GenericIEnumerableExtensions;
+using NarwhalTest.Extensions.Number.ValidationExtensions;
 using System.Numerics;
 
 namespace NarwhalTest.Application.Features.VesselTracking.BusinessLogic.IntersectionProcessor
 {
-    public class VesselIntersectionProcessor
+    public class VesselIntersectionProcessor : IVesselIntersectionProcessor
     {
-        public List<Intersection> GetIntersections(List<Vessel> vessels)
+        public List<Intersection> GetIntersections(List<Vessel> vessels, float intersectTresholdInHour = 1)
         {
-            var segments = vessels.SelectMany(v => GetSegments(v)).ToList();
-            var segmentPairs = GetAllPairs(segments, (seg1, seg2) => seg1.Vessel.Id != seg2.Vessel.Id);
+            var segments = vessels.SelectMany(v => v.GetSegments()).ToList();
+            var segmentPairs = segments.GetAllPairs((seg1, seg2) => seg1.Vessel.Id != seg2.Vessel.Id);
             var intersections = new List<Intersection>();
             foreach (var segmentPair in segmentPairs)
             {
-                var intersect = segmentPair.Item1.GetIntersectionPoint(segmentPair.Item2);
-                if (intersect is not null)
-                {
-                    var arrivalTimeVessel1 = GetIntersectionArrivalTime(intersect, segmentPair.Item1);
-                    var arrivalTimeVessel2 = GetIntersectionArrivalTime(intersect, segmentPair.Item2);
-                    var timeDifference = arrivalTimeVessel2 - arrivalTimeVessel1;
-                    var isWithinAnHour = timeDifference.TotalHours <= 1;
-
-                    if (isWithinAnHour)
-                    {
-                        intersections.Add(new Intersection()
-                        {
-                            IntersectionPoint = intersect,
-                            Vessel1 = new IntersectionVessel(segmentPair.Item1.Vessel.Id, arrivalTimeVessel1),
-                            Vessel2 = new IntersectionVessel(segmentPair.Item2.Vessel.Id, arrivalTimeVessel2)
-                        });
-                    }
-                }
+                var intersection = GetIntersectionForSegmentPair(segmentPair, intersectTresholdInHour);
+                if (intersection is not null && !IntersectionAlreadyExists(intersections, intersection))
+                    intersections.Add(intersection);
             }
             return intersections;
         }
-        private DateTime GetIntersectionArrivalTime(IntersectionPoint intersect, Segment segment)
+        private bool IntersectionAlreadyExists(List<Intersection> currentIntersections, Intersection newIntersection)
+        {//This prevents the case where the intersection is duplicated when vesselA meets VesselB on one of VesselB's trackingPoint
+            return currentIntersections.Any(currInter =>
+                currInter.IntersectionPoint.Latitude == newIntersection.IntersectionPoint.Latitude &&
+                currInter.IntersectionPoint.Longitude == newIntersection.IntersectionPoint.Longitude &&
+                currInter.Vessel1.Id == newIntersection.Vessel1.Id &&
+                currInter.Vessel2.Id == newIntersection.Vessel2.Id &&
+                currInter.Vessel1.IntersectionArrivalTime.Date == newIntersection.Vessel1.IntersectionArrivalTime.Date &&
+                currInter.Vessel2.IntersectionArrivalTime.Date == newIntersection.Vessel2.IntersectionArrivalTime.Date &&
+                currInter.Vessel1.IntersectionArrivalTime.Hour == newIntersection.Vessel1.IntersectionArrivalTime.Hour &&
+                currInter.Vessel2.IntersectionArrivalTime.Hour == newIntersection.Vessel2.IntersectionArrivalTime.Hour &&
+                currInter.Vessel1.IntersectionArrivalTime.Minute == newIntersection.Vessel1.IntersectionArrivalTime.Minute &&
+                currInter.Vessel2.IntersectionArrivalTime.Minute == newIntersection.Vessel2.IntersectionArrivalTime.Minute &&
+                currInter.Vessel1.IntersectionArrivalTime.Second == newIntersection.Vessel1.IntersectionArrivalTime.Second &&
+                currInter.Vessel2.IntersectionArrivalTime.Second == newIntersection.Vessel2.IntersectionArrivalTime.Second
+            );
+        }
+        private Intersection? GetIntersectionForSegmentPair((Segment, Segment) segmentPair, float intersectTresholdInHour)
+        {
+            var intersect = GetIntersectionPoint(segmentPair.Item1, segmentPair.Item2);
+            if (intersect is null)
+                return null;
+
+            var arrivalTimeVessel1 = GetIntersectionArrivalTime(intersect, segmentPair.Item1);
+            var arrivalTimeVessel2 = GetIntersectionArrivalTime(intersect, segmentPair.Item2);
+            var intersectionIsWithinTimeTreshold = Math.Abs((arrivalTimeVessel2 - arrivalTimeVessel1).TotalHours) <= intersectTresholdInHour;
+
+            if (!intersectionIsWithinTimeTreshold)
+                return null;
+
+            return new Intersection()
+            {
+                IntersectionPoint = intersect,
+                Vessel1 = new IntersectionVessel(segmentPair.Item1.Vessel.Id, arrivalTimeVessel1),
+                Vessel2 = new IntersectionVessel(segmentPair.Item2.Vessel.Id, arrivalTimeVessel2)
+            };
+
+        }
+        private Domain.Entities.Coordinate? GetIntersectionPoint(Segment segment1, Segment segment2)
+        {
+            var equation1 = segment1.GetEquation();
+            var equation2 = segment2.GetEquation();
+            if (equation1.Variation == equation2.Variation) return null;
+            var x = (equation1.Origin - equation2.Origin) / (equation2.Variation - equation1.Variation);
+            var y = equation1.Variation * x + equation1.Origin;
+            var intersectionIsWithinVesselsPath =
+                x.IsBetween(segment1.Point1.Latitude, segment1.Point2.Latitude) &&
+                x.IsBetween(segment2.Point1.Latitude, segment2.Point2.Latitude) &&
+                y.IsBetween(segment1.Point1.Longitude, segment1.Point2.Longitude) &&
+                y.IsBetween(segment2.Point1.Longitude, segment2.Point2.Longitude);
+            if (!intersectionIsWithinVesselsPath)
+                return null;
+            return new NarwhalTest.Domain.Entities.Coordinate()
+            {
+                Latitude = x,
+                Longitude = y
+            };
+        }
+        private DateTime GetIntersectionArrivalTime(NarwhalTest.Domain.Entities.Coordinate intersect, Segment segment)
         {
             var distanceToIntersect = GeoCalculator.GetDistance(
                         segment.Point1.Latitude,
@@ -48,70 +93,6 @@ namespace NarwhalTest.Application.Features.VesselTracking.BusinessLogic.Intersec
 
             return segment.Point1.Date.AddHours(distanceToIntersect / segment.Vessel.AverageSpeedInKmH!.Value);
         }
-        private List<Segment> GetSegments(Vessel vessel)
-        {
-            TrackingPoint lastPoint = vessel.Trackings.First();
-            return vessel.Trackings.Skip(1).Select(currentPoint =>
-            {
-                var segment = new Segment(vessel,lastPoint, currentPoint, new Equation(lastPoint,currentPoint)); 
-                lastPoint = currentPoint;//Posible reference issue
-                return segment;
-            }).ToList();
-        }
 
-        private IEnumerable<(T, T)> GetAllPairs<T>(List<T> source, Func<T,T,bool>? canPair = null)
-        {
-            return source
-                .SelectMany((val1, i) => 
-                    source.Where((val2, j) => i < j && (canPair is null || canPair(val1,val2))),
-                    (x, y) => (x, y)
-                );
-        }
-        private class Equation
-        {
-            public Equation(TrackingPoint point1, TrackingPoint point2)
-            {
-                Variation = (point2.Longitude - point1.Longitude) / (point2.Latitude - point1.Latitude);
-                Origin = point1.Longitude - (point1.Latitude * Variation);
-            }
-            public double Variation { get; set; }
-            public double Origin { get; set; }
-
-            
-        }
-        private class Segment
-        {
-            public Segment(Vessel vessel,TrackingPoint point1, TrackingPoint point2, Equation equation)
-            {
-                Vessel = vessel;
-                Point1 = point1;
-                Point2 = point2;
-                Equation = equation;
-            }
-            public Vessel Vessel { get; set; }
-            public TrackingPoint Point1 { get; set; }
-            public TrackingPoint Point2 { get; set;}
-            public Equation Equation { get; set; }
-            public IntersectionPoint? GetIntersectionPoint(Segment segment2)
-            {
-                if (Equation.Variation == segment2.Equation.Variation) return null;
-                var x = (Equation.Origin - segment2.Equation.Origin) / (segment2.Equation.Variation - Equation.Variation);
-                var y = Equation.Variation * x + Equation.Origin;
-                //TODO: find a way to ensure we won't get the same intersection
-                //twice if the intersection point is equal to one of the vessel's point.
-                //For simplicity, they won't be caught at all at the moment
-                var intersectionIsWithinVesselsPath = Point1.Latitude < x && x < Point2.Latitude &&
-                    Point1.Longitude < y && y < Point2.Longitude &&
-                    segment2.Point1.Latitude < x && x < segment2.Point2.Latitude &&
-                    segment2.Point1.Longitude < y && y < segment2.Point2.Longitude;
-                if (!intersectionIsWithinVesselsPath)
-                    return null;
-                return new IntersectionPoint()
-                {
-                    Latitude = x,
-                    Longitude = y
-                };
-            }
-        }
     }
 }
