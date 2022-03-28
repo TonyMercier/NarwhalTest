@@ -1,16 +1,16 @@
 ﻿using AutoMapper;
-using NarwhalService.Client;
 using NarwhalTest.Application.Features.VesselTracking.Contracts;
 using NarwhalTest.Domain.Entities;
+using NarwhalTest.NarwhalServiceClient;
 
 namespace NarwhalTest.Persistence.Repositories
 {
     internal class VesselTrackingRepository : IVesselTrackingRepository
     {
-        private ITrackingController _trackingController;
+        private INarwhalServiceTracking _trackingController;
         private IMapper _mapper;
 
-        public VesselTrackingRepository(ITrackingController trackingController, IMapper mapper)
+        public VesselTrackingRepository(INarwhalServiceTracking trackingController, IMapper mapper)
         {
             _trackingController = trackingController;
             _mapper = mapper;
@@ -18,10 +18,8 @@ namespace NarwhalTest.Persistence.Repositories
 
         public async Task<List<Vessel>> GetVesselTrackingsByDateRange(DateTime? from = null, DateTime? to = null, int? maxNumber = null)
         {
-            var result = await _trackingController.GetTrackingsByDateRange(from,to,maxNumber);
-            if (!result.IsSuccessStatusCode)
-                throw result.Error!;
-            return _mapper.Map<List<Vessel>>(result.Content);
+            var result = await _trackingController.GetTrackingPoints();
+            return _mapper.Map<List<Vessel>>(result);
         }
     }
 }

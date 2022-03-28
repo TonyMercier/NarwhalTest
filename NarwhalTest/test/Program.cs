@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NarwhalService.Client;
-using NarwhalService.Client.Configurations;
+using NarwhalTest.Application;
+using NarwhalTest.NarwhalServiceClient;
+using NarwhalTest.NarwhalServiceClient.Options;
+using NarwhalTest.Persistence;
 using test;
 
 IConfiguration config = new ConfigurationBuilder()
@@ -10,7 +12,8 @@ IConfiguration config = new ConfigurationBuilder()
 
 var serviceProvider = new ServiceCollection()
     .AddSingleton<Application>()
-    .AddNarwhalClientServices(config.GetSection("NarwhalServiceClientOptions").Get<NarwhalServiceClientConfiguration>())
+    .AddApplicationServices()
+    .AddPersistenceServices(config.GetSection("NarwhalServiceClientOptions").Get<NarwhalServiceClientOptions>())
     .BuildServiceProvider();
 
 await serviceProvider.GetService<Application>()!.Run();

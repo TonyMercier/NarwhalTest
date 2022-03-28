@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using DeepEqual.Syntax;
-using NarwhalService.Client.Dtos;
 using NarwhalTest.Domain.Entities;
+using NarwhalTest.NarwhalServiceClient.Dtos;
 using NarwhalTest.Persistence.Mappings;
 using System;
 using System.Collections.Generic;

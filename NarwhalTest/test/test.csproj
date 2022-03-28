@@ -16,7 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NarwhalService.Client\NarwhalService.Client.csproj" />
+    <ProjectReference Include="..\NarwhalTest.Application\NarwhalTest.Application.csproj" />
+    <ProjectReference Include="..\NarwhalTest.Persistence\NarwhalTest.Persistence.csproj" />
   </ItemGroup>
 
   <ItemGroup>

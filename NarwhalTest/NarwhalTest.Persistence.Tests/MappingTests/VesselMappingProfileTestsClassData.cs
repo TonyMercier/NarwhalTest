@@ -1,5 +1,5 @@
-﻿using NarwhalService.Client.Dtos;
-using NarwhalTest.Domain.Entities;
+﻿using NarwhalTest.Domain.Entities;
+using NarwhalTest.NarwhalServiceClient.Dtos;
 using System;
 using System.Collections;
 using System.Collections.Generic;

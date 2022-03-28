@@ -1,19 +1,21 @@
-﻿using NarwhalService.Client;
+﻿using MediatR;
+using NarwhalTest.Application.Features.VesselTracking.Queries.GetVesselTrackingInfos;
+using NarwhalTest.NarwhalServiceClient;
 
 namespace test
 {
     public class Application
     {
-        private ITrackingController _trackingController;
+        private IMediator _mediator;
 
-        public Application(ITrackingController trackingController)
+        public Application(IMediator mediator)
         {
-            this._trackingController = trackingController;
+            _mediator = mediator;
         }
 
         public async Task Run()
         {
-            var trackings =await _trackingController.GetTrackingsByDateRange();
+            var result = await _mediator.Send(new GetVesselTrackingInfosQuery(from: DateTime.Parse("2018-04-23"), to: DateTime.Parse("2018-04-24")));
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using NarwhalService.Client.Dtos;
 using NarwhalTest.Domain.Entities;
+using NarwhalTest.NarwhalServiceClient.Dtos;
 
 namespace NarwhalTest.Persistence.Mappings
 {

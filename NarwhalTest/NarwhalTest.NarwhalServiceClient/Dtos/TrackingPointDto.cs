@@ -1,4 +1,4 @@
-﻿namespace NarwhalService.Client.Dtos
+﻿namespace NarwhalTest.NarwhalServiceClient.Dtos
 {
     public class TrackingPointDto
     {
