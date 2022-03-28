@@ -12,14 +12,31 @@ namespace NarwhalTest.Application.Features.VesselTracking.BusinessLogic.Intersec
         public List<Intersection> GetIntersections(List<Vessel> vessels, float intersectTresholdInHour = 1)
         {
             var segments = vessels.SelectMany(v => v.GetSegments()).ToList();
-            var segmentPairs = segments.GetAllPairs((seg1, seg2) => seg1.Vessel.Id != seg2.Vessel.Id);
+            //var segmentPairs = segments.GetAllPairs((seg1, seg2) => seg1.Vessel.Id != seg2.Vessel.Id);
+            var segmentPairs = segments.GetAllPairs((seg1, seg2) => 
+                seg1.Vessel.Id != seg2.Vessel.Id && 
+                seg1.Point1.Date.AddHours(-1) <= seg2.Point2.Date.AddHours(1) && seg2.Point1.Date.AddHours(-1) <= seg1.Point2.Date.AddHours(1)//Not working as intended, needs some work
+            );
             var intersections = new List<Intersection>();
-            foreach (var segmentPair in segmentPairs)
-            {
-                var intersection = GetIntersectionForSegmentPair(segmentPair, intersectTresholdInHour);
-                if (intersection is not null && !IntersectionAlreadyExists(intersections, intersection))
-                    intersections.Add(intersection);
-            }
+            //foreach (var segmentPair in segmentPairs)
+            //{
+            //    var intersection = GetIntersectionForSegmentPair(segmentPair, intersectTresholdInHour);
+            //    if (intersection is not null && !IntersectionAlreadyExists(intersections, intersection))
+            //        intersections.Add(intersection);
+            //}
+            var cnt = segmentPairs.Count();
+            Parallel.ForEach(segmentPairs, segmentPair =>
+             {
+                 var intersection = GetIntersectionForSegmentPair(segmentPair, intersectTresholdInHour);
+                 if (intersection is not null)
+                 {
+                     lock (intersections)
+                     {
+                         if (!IntersectionAlreadyExists(intersections, intersection))
+                             intersections.Add(intersection);
+                     }
+                 }
+             });
             return intersections;
         }
         private bool IntersectionAlreadyExists(List<Intersection> currentIntersections, Intersection newIntersection)
@@ -64,9 +81,30 @@ namespace NarwhalTest.Application.Features.VesselTracking.BusinessLogic.Intersec
         {
             var equation1 = segment1.GetEquation();
             var equation2 = segment2.GetEquation();
-            if (equation1.Variation == equation2.Variation) return null;
-            var x = (equation1.Origin - equation2.Origin) / (equation2.Variation - equation1.Variation);
-            var y = equation1.Variation * x + equation1.Origin;
+            var intersectionIsImpossible =
+                (equation1.IsStaticXCoordinate && equation2.IsStaticXCoordinate && equation1.X != equation2.X) || //both boats are going straight up and not at the same latitude
+                equation1.Variation == equation2.Variation; //both boats are going in a parallel path
+            if (intersectionIsImpossible)
+                return null;
+
+            double x;
+            double y;
+            //Particular case where both boats follow each other not considered
+            if (equation1.IsStaticXCoordinate)
+            {
+                x = equation1.X;
+                y = equation2.Variation * x + equation2.Origin;
+            }
+            else if (equation2.IsStaticXCoordinate)
+            {
+                x = equation2.X;
+                y = equation1.Variation * x + equation1.Origin;
+            }
+            else
+            {
+                x = (equation1.Origin - equation2.Origin) / (equation2.Variation - equation1.Variation);
+                y = equation1.Variation * x + equation1.Origin;
+            }
             var intersectionIsWithinVesselsPath =
                 x.IsBetween(segment1.Point1.Latitude, segment1.Point2.Latitude) &&
                 x.IsBetween(segment2.Point1.Latitude, segment2.Point2.Latitude) &&
@@ -93,6 +131,5 @@ namespace NarwhalTest.Application.Features.VesselTracking.BusinessLogic.Intersec
 
             return segment.Point1.Date.AddHours(distanceToIntersect / segment.Vessel.AverageSpeedInKmH!.Value);
         }
-
     }
 }

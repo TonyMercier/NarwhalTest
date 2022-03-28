@@ -48,6 +48,44 @@ namespace NarwhalTest.Domain.Tests.Entities.Intersections.SegmentTests.ClassData
                 ),
                 new LinearEquation(-1.0681818181818181,91.31818181818181)
             };
+            yield return new object[]
+            {
+                new Segment(
+                    new Vessel(1,new List<TrackingPoint>()),
+                    new TrackingPoint()
+                    {
+                        Date = DateTime.Now,
+                        Latitude = 2,
+                        Longitude = 55,
+                    },
+                    new TrackingPoint()
+                    {
+                        Date = DateTime.Now,
+                        Latitude = 2,
+                        Longitude = 8,
+                    }
+                ),
+                new LinearEquation(2)
+            };
+            yield return new object[]
+            {
+                new Segment(
+                    new Vessel(1,new List<TrackingPoint>()),
+                    new TrackingPoint()
+                    {
+                        Date = DateTime.Now,
+                        Latitude = 277,
+                        Longitude = 55,
+                    },
+                    new TrackingPoint()
+                    {
+                        Date = DateTime.Now,
+                        Latitude = 277,
+                        Longitude = 8,
+                    }
+                ),
+                new LinearEquation(277)
+            };
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

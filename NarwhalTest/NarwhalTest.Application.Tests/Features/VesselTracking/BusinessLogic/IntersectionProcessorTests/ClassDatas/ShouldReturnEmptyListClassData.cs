@@ -205,6 +205,54 @@ namespace NarwhalTest.Application.Tests.Features.VesselTracking.BusinessLogic.In
                     }
                 }
             };
+            yield return new object[]
+             {
+                new List<Vessel>()
+                {
+                    new Vessel(123,
+                    new List<TrackingPoint>()
+                    {
+                        new TrackingPoint()
+                        {
+                            Date = DateTime.Parse("2022-03-25 10:00:00"),
+                            Latitude = 2,
+                            Longitude = 0
+                        },
+                        new TrackingPoint()
+                        {
+                            Date = DateTime.Parse("2022-03-25 10:30:00"),
+                            Latitude =2,
+                            Longitude = 10
+                        }
+                    }
+                    )
+                    {
+                        DistanceTraveledInKM = 1110,
+                        AverageSpeedInKmH = 2220
+                    },
+                    new Vessel(222,
+                    new List<TrackingPoint>()
+                    {
+                        new TrackingPoint()
+                        {
+                            Date = DateTime.Parse("2022-03-25 10:00:00"),
+                            Latitude = 3,
+                            Longitude = 0
+                        },
+                        new TrackingPoint()
+                        {
+                            Date = DateTime.Parse("2022-03-25 10:30:00"),
+                            Latitude = 3,
+                            Longitude = 10
+                        }
+                    }
+                    )
+                    {
+                        DistanceTraveledInKM = 1110,
+                        AverageSpeedInKmH = 2220
+                    },
+                }
+            };
         }
 
         IEnumerator IEnumerable.GetEnumerator()=>GetEnumerator();
