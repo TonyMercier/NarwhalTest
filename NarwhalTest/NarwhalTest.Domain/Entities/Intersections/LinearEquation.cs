@@ -17,5 +17,10 @@
         public double Variation { get; set; }
         public double Origin { get; set; }
         public double X { get; set; }
+
+        public double CalculateYFromX(double x)
+        {
+            return Variation * x + Origin;
+        }
     }
 }

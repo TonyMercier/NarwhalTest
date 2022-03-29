@@ -8,9 +8,9 @@ namespace NarwhalTest.NarwhalServiceClient
     internal class NarwhalServiceTracking : INarwhalServiceTracking
     {
         private readonly RestClient _restClient;
-        public NarwhalServiceTracking(RestClient restClient)
+        public NarwhalServiceTracking(IOptions<NarwhalServiceClientOptions> options)
         {
-            _restClient = restClient;
+            _restClient = new RestClient(options.Value.BaseUrl);
         }
 
         public async Task<IEnumerable<TrackingPointDto>> GetTrackingPoints(DateTime? from = null, DateTime? to = null, int? limit = null)

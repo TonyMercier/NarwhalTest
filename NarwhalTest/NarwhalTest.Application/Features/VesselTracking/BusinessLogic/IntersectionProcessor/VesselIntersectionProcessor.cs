@@ -12,49 +12,29 @@ namespace NarwhalTest.Application.Features.VesselTracking.BusinessLogic.Intersec
         public List<Intersection> GetIntersections(List<Vessel> vessels, float intersectTresholdInHour = 1)
         {
             var segments = vessels.SelectMany(v => v.GetSegments()).ToList();
-            //var segmentPairs = segments.GetAllPairs((seg1, seg2) => seg1.Vessel.Id != seg2.Vessel.Id);
+            //This would need some work
             var segmentPairs = segments.GetAllPairs((seg1, seg2) => 
                 seg1.Vessel.Id != seg2.Vessel.Id && 
-                seg1.Point1.Date.AddHours(-1) <= seg2.Point2.Date.AddHours(1) && seg2.Point1.Date.AddHours(-1) <= seg1.Point2.Date.AddHours(1)//Not working as intended, needs some work
-            );
+                seg1.Point1.Date.AddHours(-intersectTresholdInHour*3) <= seg2.Point2.Date.AddHours(intersectTresholdInHour*3) && 
+                seg2.Point1.Date.AddHours(-intersectTresholdInHour*3) <= seg1.Point2.Date.AddHours(intersectTresholdInHour*3)
+                
+            ).ToList();
+
             var intersections = new List<Intersection>();
-            //foreach (var segmentPair in segmentPairs)
-            //{
-            //    var intersection = GetIntersectionForSegmentPair(segmentPair, intersectTresholdInHour);
-            //    if (intersection is not null && !IntersectionAlreadyExists(intersections, intersection))
-            //        intersections.Add(intersection);
-            //}
-            var cnt = segmentPairs.Count();
-            Parallel.ForEach(segmentPairs, segmentPair =>
+            segmentPairs.ForEach(segmentPair =>
              {
-                 var intersection = GetIntersectionForSegmentPair(segmentPair, intersectTresholdInHour);
-                 if (intersection is not null)
+                 var newIntersection = GetIntersectionForSegmentPair(segmentPair, intersectTresholdInHour);
+                 if (newIntersection is not null)
                  {
                      lock (intersections)
                      {
-                         if (!IntersectionAlreadyExists(intersections, intersection))
-                             intersections.Add(intersection);
+                         //This condition prevents the case where the intersection is duplicated when vesselA meets VesselB on one of VesselB's trackingPoint
+                         if (!intersections.Any(existingIntersection => existingIntersection ==newIntersection))
+                             intersections.Add(newIntersection);
                      }
                  }
              });
             return intersections;
-        }
-        private bool IntersectionAlreadyExists(List<Intersection> currentIntersections, Intersection newIntersection)
-        {//This prevents the case where the intersection is duplicated when vesselA meets VesselB on one of VesselB's trackingPoint
-            return currentIntersections.Any(currInter =>
-                currInter.IntersectionPoint.Latitude == newIntersection.IntersectionPoint.Latitude &&
-                currInter.IntersectionPoint.Longitude == newIntersection.IntersectionPoint.Longitude &&
-                currInter.Vessel1.Id == newIntersection.Vessel1.Id &&
-                currInter.Vessel2.Id == newIntersection.Vessel2.Id &&
-                currInter.Vessel1.IntersectionArrivalTime.Date == newIntersection.Vessel1.IntersectionArrivalTime.Date &&
-                currInter.Vessel2.IntersectionArrivalTime.Date == newIntersection.Vessel2.IntersectionArrivalTime.Date &&
-                currInter.Vessel1.IntersectionArrivalTime.Hour == newIntersection.Vessel1.IntersectionArrivalTime.Hour &&
-                currInter.Vessel2.IntersectionArrivalTime.Hour == newIntersection.Vessel2.IntersectionArrivalTime.Hour &&
-                currInter.Vessel1.IntersectionArrivalTime.Minute == newIntersection.Vessel1.IntersectionArrivalTime.Minute &&
-                currInter.Vessel2.IntersectionArrivalTime.Minute == newIntersection.Vessel2.IntersectionArrivalTime.Minute &&
-                currInter.Vessel1.IntersectionArrivalTime.Second == newIntersection.Vessel1.IntersectionArrivalTime.Second &&
-                currInter.Vessel2.IntersectionArrivalTime.Second == newIntersection.Vessel2.IntersectionArrivalTime.Second
-            );
         }
         private Intersection? GetIntersectionForSegmentPair((Segment, Segment) segmentPair, float intersectTresholdInHour)
         {
@@ -93,17 +73,17 @@ namespace NarwhalTest.Application.Features.VesselTracking.BusinessLogic.Intersec
             if (equation1.IsStaticXCoordinate)
             {
                 x = equation1.X;
-                y = equation2.Variation * x + equation2.Origin;
+                y = equation2.CalculateYFromX(x);
             }
             else if (equation2.IsStaticXCoordinate)
             {
                 x = equation2.X;
-                y = equation1.Variation * x + equation1.Origin;
+                y = equation1.CalculateYFromX(x);
             }
             else
             {
                 x = (equation1.Origin - equation2.Origin) / (equation2.Variation - equation1.Variation);
-                y = equation1.Variation * x + equation1.Origin;
+                y = equation1.CalculateYFromX(x);
             }
             var intersectionIsWithinVesselsPath =
                 x.IsBetween(segment1.Point1.Latitude, segment1.Point2.Latitude) &&

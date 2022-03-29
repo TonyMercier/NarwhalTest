@@ -18,7 +18,7 @@ namespace NarwhalTest.Persistence.Repositories
 
         public async Task<List<Vessel>> GetVesselTrackingsByDateRange(DateTime? from = null, DateTime? to = null, int? maxNumber = null)
         {
-            var result = await _trackingController.GetTrackingPoints();
+            var result = await _trackingController.GetTrackingPoints(from,to,maxNumber);
             return _mapper.Map<List<Vessel>>(result);
         }
     }

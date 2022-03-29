@@ -26,7 +26,9 @@ namespace NarwhalTest.Application.Features.VesselTracking.Queries.GetVesselTrack
                 .Select(_vesselDistanceProcessor.GetVesselWithProcessedDistance)
                 .Select(_vesselAverageSpeedProcessor.GetVesselWithProcessedAverageSpeed)
                 .ToList();
+            
             var intersections = _vesselIntersectionProcessor.GetIntersections(vessels);
+            intersections.Count(x => true);
             return new GetVesselTrackingInfosResponse(vessels, intersections); 
         }
         

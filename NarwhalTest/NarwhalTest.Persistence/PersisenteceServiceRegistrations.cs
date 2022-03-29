@@ -10,12 +10,12 @@ namespace NarwhalTest.Persistence
 {
     public static class PersisenteceServiceRegistrations
     {
-        public static IServiceCollection AddPersistenceServices(this IServiceCollection services,NarwhalServiceClientOptions options)
+        public static IServiceCollection AddPersistenceServices(this IServiceCollection services)
         {
             return services
                 .AddMediatR(Assembly.GetExecutingAssembly())
                 .AddAutoMapper(Assembly.GetExecutingAssembly())
-                .AddNarwhalServiceClientServices(options)
+                .AddNarwhalServiceClientServices()
                 .AddSingleton<IVesselTrackingRepository, VesselTrackingRepository>();
         }
     }
