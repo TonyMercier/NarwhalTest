@@ -2,7 +2,7 @@
 {
     public static class ItemPairsExtensions
     {
-        public static IEnumerable<(T, T)> GetAllPairs<T>(this List<T> source, Func<T, T, bool>? canPair = null)
+        public static IEnumerable<(T, T)> GetAllPairs<T>(this IEnumerable<T> source, Func<T, T, bool>? canPair = null)
         {
             return source.AsParallel()
                 .SelectMany((val1, i) =>

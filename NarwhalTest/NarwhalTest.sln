@@ -47,7 +47,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NarwhalTest.Extensions.Numb
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NarwhalTest.NarwhalServiceClient", "NarwhalTest.NarwhalServiceClient\NarwhalTest.NarwhalServiceClient.csproj", "{03D985B6-0716-4081-AA96-AA3DD052C7F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NarwhalTest.Api", "NarwhalTest.Api\NarwhalTest.Api.csproj", "{1B62976D-50C8-42DF-9D1C-14FE8E1475A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NarwhalTest.Api", "NarwhalTest.Api\NarwhalTest.Api.csproj", "{1B62976D-50C8-42DF-9D1C-14FE8E1475A6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Helpers", "Helpers", "{2E23DB43-100A-4CFA-B43F-78F2A21A057E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GeoCalculator", "GeoCalculator", "{656808D2-9E60-4758-B8D8-CADE1347D43D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NarwhalTest.Helpers.GeoCalculator", "NarwhalTest.Helpers.GeoCalculator\NarwhalTest.Helpers.GeoCalculator.csproj", "{A66AB544-1ABE-466F-B97F-9073FE125F84}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NarwhalTest.Helpers.GeoCalculator.Tests", "NarwhalTest.Helpers.GeoCalculator.Tests\NarwhalTest.Helpers.GeoCalculator.Tests.csproj", "{58796703-7CF1-4068-AD07-A710318DC55D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -103,6 +111,14 @@ Global
 		{1B62976D-50C8-42DF-9D1C-14FE8E1475A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B62976D-50C8-42DF-9D1C-14FE8E1475A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B62976D-50C8-42DF-9D1C-14FE8E1475A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A66AB544-1ABE-466F-B97F-9073FE125F84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A66AB544-1ABE-466F-B97F-9073FE125F84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A66AB544-1ABE-466F-B97F-9073FE125F84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A66AB544-1ABE-466F-B97F-9073FE125F84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58796703-7CF1-4068-AD07-A710318DC55D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58796703-7CF1-4068-AD07-A710318DC55D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58796703-7CF1-4068-AD07-A710318DC55D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58796703-7CF1-4068-AD07-A710318DC55D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -128,6 +144,10 @@ Global
 		{487EF034-E84B-43A4-9E9B-F10779C94396} = {2ACE0560-B033-44B8-9061-EF4DE4AA2D56}
 		{03D985B6-0716-4081-AA96-AA3DD052C7F0} = {ABC3E82B-C9DB-43B3-B8B8-C42F573A4340}
 		{1B62976D-50C8-42DF-9D1C-14FE8E1475A6} = {69D7D75D-6168-4D72-B814-585CA8DE3B51}
+		{2E23DB43-100A-4CFA-B43F-78F2A21A057E} = {ABC3E82B-C9DB-43B3-B8B8-C42F573A4340}
+		{656808D2-9E60-4758-B8D8-CADE1347D43D} = {2E23DB43-100A-4CFA-B43F-78F2A21A057E}
+		{A66AB544-1ABE-466F-B97F-9073FE125F84} = {656808D2-9E60-4758-B8D8-CADE1347D43D}
+		{58796703-7CF1-4068-AD07-A710318DC55D} = {656808D2-9E60-4758-B8D8-CADE1347D43D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3B3A85E2-E9A1-4484-AA03-5A1BB71E89EF}

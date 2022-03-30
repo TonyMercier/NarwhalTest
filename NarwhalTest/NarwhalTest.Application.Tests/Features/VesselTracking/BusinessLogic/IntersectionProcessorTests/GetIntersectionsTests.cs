@@ -3,6 +3,7 @@ using NarwhalTest.Application.Features.VesselTracking.BusinessLogic.Intersection
 using NarwhalTest.Application.Tests.Features.VesselTracking.BusinessLogic.IntersectionProcessorTests.ClassDatas;
 using NarwhalTest.Domain.Entities;
 using NarwhalTest.Domain.Entities.Intersections;
+using NarwhalTest.Helpers.GeoCalculator;
 using System.Collections.Generic;
 using Xunit;
 
@@ -14,7 +15,7 @@ namespace NarwhalTest.Application.Tests.Features.VesselTracking.BusinessLogic.In
         [ClassData(typeof(ShouldReturnIntersectionsClassData))]
         public void ShouldReturnIntersections(List<Vessel> input, List<Intersection> expected)
         {
-            var processor = new VesselIntersectionProcessor();
+            var processor = new VesselIntersectionProcessor(new GeoCalculator());
             var actual = processor.GetIntersections(input);
             Assert.Equal(expected.Count, actual.Count);
             for (int i = 0; i < expected.Count; i++)
@@ -40,7 +41,7 @@ namespace NarwhalTest.Application.Tests.Features.VesselTracking.BusinessLogic.In
         [ClassData(typeof(ShouldReturnEmptyListClassData))]
         public void ShouldReturnEmptyList(List<Vessel> input)
         {
-            var processor = new VesselIntersectionProcessor();
+            var processor = new VesselIntersectionProcessor(new GeoCalculator());
             var actual = processor.GetIntersections(input);
             Assert.Empty(actual);
         }

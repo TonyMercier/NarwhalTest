@@ -9,7 +9,6 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-    <PackageReference Include="Geolocation" Version="1.2.1" />
     <PackageReference Include="MediatR" Version="10.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
   </ItemGroup>
@@ -18,6 +17,7 @@
     <ProjectReference Include="..\NarwhalTest.Domain\NarwhalTest.Domain.csproj" />
     <ProjectReference Include="..\NarwhalTest.Extensions.IEnumerable\NarwhalTest.Extensions.IEnumerable.csproj" />
     <ProjectReference Include="..\NarwhalTest.Extensions.Number\NarwhalTest.Extensions.Number.csproj" />
+    <ProjectReference Include="..\NarwhalTest.Helpers.GeoCalculator\NarwhalTest.Helpers.GeoCalculator.csproj" />
   </ItemGroup>
 
 </Project>

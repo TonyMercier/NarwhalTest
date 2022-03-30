@@ -1,49 +1,52 @@
-﻿using Geolocation;
-using NarwhalTest.Domain.Entities;
+﻿using NarwhalTest.Domain.Entities;
 using NarwhalTest.Domain.Entities.Intersections;
 using NarwhalTest.Extensions.IEnumerable.GenericIEnumerableExtensions;
 using NarwhalTest.Extensions.Number.ValidationExtensions;
-using System.Numerics;
+using NarwhalTest.Helpers.GeoCalculator;
+using NarwhalTest.Helpers.GeoCalculator.Entities;
 
 namespace NarwhalTest.Application.Features.VesselTracking.BusinessLogic.IntersectionProcessor
 {
     public class VesselIntersectionProcessor : IVesselIntersectionProcessor
     {
+        private readonly IGeoCalculator _geoCalculator;
+
+        public VesselIntersectionProcessor(IGeoCalculator geoCalculator)
+        {
+            _geoCalculator = geoCalculator;
+        }
+
         public List<Intersection> GetIntersections(List<Vessel> vessels, float intersectTresholdInHour = 1)
         {
-            var segments = vessels.SelectMany(v => v.GetSegments()).ToList();
-            //This would need some work
-            var segmentPairs = segments.GetAllPairs((seg1, seg2) => 
-                seg1.Vessel.Id != seg2.Vessel.Id && 
-                seg1.Point1.Date.AddHours(-intersectTresholdInHour*3) <= seg2.Point2.Date.AddHours(intersectTresholdInHour*3) && 
-                seg2.Point1.Date.AddHours(-intersectTresholdInHour*3) <= seg1.Point2.Date.AddHours(intersectTresholdInHour*3)
-                
-            ).ToList();
+            var segmentPairs = vessels
+                .SelectMany(vessel => vessel.GetSegments())
+                .GetAllPairs((seg1, seg2) =>
+                    seg1.Vessel.Id != seg2.Vessel.Id && //This would need some work
+                    seg1.Point1.Date.AddHours(-intersectTresholdInHour * 3) <= seg2.Point2.Date.AddHours(intersectTresholdInHour * 3) &&
+                    seg2.Point1.Date.AddHours(-intersectTresholdInHour * 3) <= seg1.Point2.Date.AddHours(intersectTresholdInHour * 3)
+                )
+                .ToList();
 
             var intersections = new List<Intersection>();
             segmentPairs.ForEach(segmentPair =>
              {
                  var newIntersection = GetIntersectionForSegmentPair(segmentPair, intersectTresholdInHour);
-                 if (newIntersection is not null)
-                 {
-                     lock (intersections)
-                     {
-                         //This condition prevents the case where the intersection is duplicated when vesselA meets VesselB on one of VesselB's trackingPoint
-                         if (!intersections.Any(existingIntersection => existingIntersection ==newIntersection))
-                             intersections.Add(newIntersection);
-                     }
-                 }
+                 //This condition prevents the case where the intersection is duplicated when vesselA meets VesselB on one of VesselB's trackingPoint
+                 if (newIntersection is not null && !intersections.Any(existingIntersection => existingIntersection == newIntersection))
+                    intersections.Add(newIntersection);
              });
             return intersections;
         }
         private Intersection? GetIntersectionForSegmentPair((Segment, Segment) segmentPair, float intersectTresholdInHour)
         {
+            var segment1 = segmentPair.Item1;
+            var segment2 = segmentPair.Item2;
             var intersect = GetIntersectionPoint(segmentPair.Item1, segmentPair.Item2);
             if (intersect is null)
                 return null;
 
-            var arrivalTimeVessel1 = GetIntersectionArrivalTime(intersect, segmentPair.Item1);
-            var arrivalTimeVessel2 = GetIntersectionArrivalTime(intersect, segmentPair.Item2);
+            var arrivalTimeVessel1 = _geoCalculator.GetArrivalTime(segment1.Point1.Latitude, segment1.Point1.Longitude, intersect.Latitude, intersect.Longitude, segment1.Point1.Date, segment1.Vessel.AverageSpeedInKmH!.Value);
+            var arrivalTimeVessel2 = _geoCalculator.GetArrivalTime(segment2.Point1.Latitude, segment2.Point1.Longitude, intersect.Latitude, intersect.Longitude, segment2.Point1.Date, segment2.Vessel.AverageSpeedInKmH!.Value);
             var intersectionIsWithinTimeTreshold = Math.Abs((arrivalTimeVessel2 - arrivalTimeVessel1).TotalHours) <= intersectTresholdInHour;
 
             if (!intersectionIsWithinTimeTreshold)
@@ -57,7 +60,7 @@ namespace NarwhalTest.Application.Features.VesselTracking.BusinessLogic.Intersec
             };
 
         }
-        private Domain.Entities.Coordinate? GetIntersectionPoint(Segment segment1, Segment segment2)
+        private Coordinate? GetIntersectionPoint(Segment segment1, Segment segment2)
         {
             var equation1 = segment1.GetEquation();
             var equation2 = segment2.GetEquation();
@@ -92,24 +95,11 @@ namespace NarwhalTest.Application.Features.VesselTracking.BusinessLogic.Intersec
                 y.IsBetween(segment2.Point1.Longitude, segment2.Point2.Longitude);
             if (!intersectionIsWithinVesselsPath)
                 return null;
-            return new NarwhalTest.Domain.Entities.Coordinate()
+            return new Coordinate()
             {
                 Latitude = x,
                 Longitude = y
             };
-        }
-        private DateTime GetIntersectionArrivalTime(NarwhalTest.Domain.Entities.Coordinate intersect, Segment segment)
-        {
-            var distanceToIntersect = GeoCalculator.GetDistance(
-                        segment.Point1.Latitude,
-                        segment.Point1.Longitude,
-                        intersect.Latitude,
-                        intersect.Longitude,
-                        4,
-                        DistanceUnit.Kilometers
-                    );
-
-            return segment.Point1.Date.AddHours(distanceToIntersect / segment.Vessel.AverageSpeedInKmH!.Value);
         }
     }
 }
