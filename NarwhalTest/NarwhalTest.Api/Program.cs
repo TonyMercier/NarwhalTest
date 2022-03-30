@@ -7,13 +7,9 @@ using NarwhalTest.NarwhalServiceClient.Options;
 using NarwhalTest.Persistence;
 using System.Configuration;
 
-IConfiguration config = new ConfigurationBuilder()
-    .AddJsonFile("appsettings.json")
-    .Build();
-
 var builder = WebApplication.CreateBuilder(args);
 builder.Services
-    .Configure<NarwhalServiceClientOptions>(config.GetSection("NarwhalServiceClientOptions"))
+    .Configure<NarwhalServiceClientOptions>(builder.Configuration.GetSection("NarwhalServiceClientOptions"))
     .AddApplicationServices()
     .AddPersistenceServices()
     .BuildServiceProvider();
@@ -21,5 +17,11 @@ builder.Services
 var app = builder.Build();
 
 app.MapTrackingInfosEndPoints();
+app.MapGet("/", (IConfiguration config) => new
+{
+    info = "Quick end point to show currently running configs",
+    TestConfig = config.GetSection("TestConfig").Value,
+    NarwhalServiceClientOptions = config.GetSection("NarwhalServiceClientOptions")
+});
 
 app.Run();

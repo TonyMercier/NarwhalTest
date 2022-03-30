@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: narwhaltest-deployment
+spec:
+  selector:
+    matchLabels:
+      app: narwhaltest-pod
+  template:
+    metadata:
+      labels:
+        app: narwhaltest-pod
+    spec:
+      containers:
+      - name: narwhaltestapi-container
+        image: narwhaltest_api
+        imagePullPolicy: Never
+        env:
+          - name: TestConfig
+            value: "I'm from environment variables!"
+          - name: NarwhalServiceClientOptions__BaseUrl
+            value: "http://192.168.50.67:6161/"
+        resources:
+          limits:
+            memory: "1200Mi"
+            cpu: "9000m"
+        ports:
+        - containerPort: 80
