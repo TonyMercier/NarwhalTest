@@ -1,6 +1,6 @@
 # NarwhalTest
 ## Content
-This repository contains all the projects from this repository: https://github.com/OneOceanGroup/Narwhal
+This repository contains all the projects from this repository: https://github.com/OneOceanGroup/Narwhal.
 It also contains my take on the technical test in this folder/project: NarwhalTest. 
 
 ## NarwhalTest - Description
