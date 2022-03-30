@@ -18,13 +18,5 @@ builder.Services
 var app = builder.Build();
 
 app.MapTrackingInfosEndPoints();
-app.MapGet("/", (IConfiguration config, IOptions<NarwhalServiceClientOptions> options) => new
-{
-    info = "Quick end point to show currently running configs",
-    TestConfig = config.GetSection("TestConfig").Value,
-    NarwhalServiceClientOptions = config.GetSection("NarwhalServiceClientOptions"),
-    NarwhalServiceClientOptions__BaseUrl = config.GetSection("NarwhalServiceClientOptions:BaseUrl"),
-    InjectedNarwhalService = options.Value
-});
 
 app.Run();
