@@ -25,7 +25,7 @@ namespace NarwhalTest.NarwhalServiceClient
             var response = await _restClient.ExecuteAsync<IEnumerable<TrackingPointDto>>(request);
             if (response.IsSuccessful)
                 return response!.Data!;
-            return new List<TrackingPointDto>();
+            throw response!.ErrorException!;
         }
     }
 }
