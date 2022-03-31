@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using NarwhalTest.Application.Features.VesselTracking.BusinessLogic;
 using NarwhalTest.Application.Features.VesselTracking.BusinessLogic.IntersectionProcessor;
+using NarwhalTest.Helpers.GeoCalculator;
 using System.Reflection;
 
 namespace NarwhalTest.Application
@@ -15,7 +16,8 @@ namespace NarwhalTest.Application
                 .AddAutoMapper(Assembly.GetExecutingAssembly())
                 .AddSingleton<IVesselAverageSpeedProcessor, VesselAverageSpeedProcessor>()
                 .AddSingleton<IVesselDistanceProcessor, VesselDistanceProcessor>()
-                .AddSingleton<IVesselIntersectionProcessor, VesselIntersectionProcessor>();
+                .AddSingleton<IVesselIntersectionProcessor, VesselIntersectionProcessor>()
+                .AddGeoCalculatorServices();
         }
     }
 }

@@ -4,7 +4,7 @@ namespace NarwhalTest.Helpers.GeoCalculator
 {
     public static class GeoCalculatorServicesRegistrations
     {
-        public static IServiceCollection AddGeoCalculatorServices(IServiceCollection services)
+        public static IServiceCollection AddGeoCalculatorServices(this IServiceCollection services)
         {
             services.AddSingleton<IGeoCalculator,GeoCalculator>();
             return services;
